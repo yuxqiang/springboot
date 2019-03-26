@@ -20,7 +20,7 @@ import org.ten_common.entity.StatusCode;
 @RestController
 @RequestMapping("/label")
 @CrossOrigin
-public class UserController {
+public class LabelController {
 
 	@Autowired
 	private LabelService labelService;
