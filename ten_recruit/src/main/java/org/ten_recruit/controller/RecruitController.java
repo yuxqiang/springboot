@@ -14,16 +14,16 @@ import org.springframework.web.bind.annotation.RestController;
 import org.ten_common.entity.PageResult;
 import org.ten_common.entity.Result;
 import org.ten_common.entity.StatusCode;
-import org.ten_recruit.pojo.Enterprise;
-import org.ten_recruit.service.EnterpriseService;
+import org.ten_recruit.pojo.Recruit;
+import org.ten_recruit.service.RecruitService;
 
 @RestController
-@RequestMapping("/enterprise")
+@RequestMapping("/recruit")
 @CrossOrigin
-public class EnterpriseController {
+public class RecruitController {
 
 	@Autowired
-	private EnterpriseService enterpriseService;
+	private RecruitService recruitService;
 
 	/**
 	 * 查询全部列表
@@ -33,7 +33,7 @@ public class EnterpriseController {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@RequestMapping(method = RequestMethod.GET)
 	public Result<List> findAll() {
-		return new Result(true, StatusCode.OK, "查询成功", enterpriseService.findAll());
+		return new Result(true, StatusCode.OK, "查询成功", recruitService.findAll());
 	}
 
 	/**
@@ -44,8 +44,8 @@ public class EnterpriseController {
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	public Result<Enterprise> findById(@PathVariable String id) {
-		return new Result(true, StatusCode.OK, "查询成功", enterpriseService.findById(id));
+	public Result<Recruit> findById(@PathVariable String id) {
+		return new Result(true, StatusCode.OK, "查询成功", recruitService.findById(id));
 	}
 
 	/**
@@ -56,14 +56,14 @@ public class EnterpriseController {
 	 */
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(method = RequestMethod.POST)
-	public Result add(@RequestBody Enterprise label) {
-		enterpriseService.add(label);
+	public Result add(@RequestBody Recruit recruit) {
+		recruitService.add(recruit);
 		return new Result(true, StatusCode.OK, "增加成功");
 	}
 
 	@RequestMapping(value = "/search", method = RequestMethod.POST)
 	public Result<List> findSearch(@RequestBody Map searchMap) {
-		return new Result<>(true, StatusCode.OK, "查询成功", enterpriseService.findSearch(searchMap));
+		return new Result<>(true, StatusCode.OK, "查询成功", recruitService.findSearch(searchMap));
 	}
 
 	/**
@@ -74,9 +74,9 @@ public class EnterpriseController {
 	 */
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-	public Result update(@RequestBody Enterprise enterprise, @PathVariable String id) {
-		enterprise.setId(id);
-		enterpriseService.update(enterprise);
+	public Result update(@RequestBody Recruit recruit, @PathVariable String id) {
+		recruit.setId(id);
+		recruitService.update(recruit);
 		return new Result(true, StatusCode.OK, "修改成功");
 	}
 
@@ -89,7 +89,7 @@ public class EnterpriseController {
 	@SuppressWarnings({ "rawtypes" })
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public Result deleteById(@PathVariable String id) {
-		enterpriseService.deleteById(id);
+		recruitService.deleteById(id);
 		return new Result(true, StatusCode.OK, "删除成功");
 	}
 
@@ -104,18 +104,24 @@ public class EnterpriseController {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@RequestMapping(value = "/search/{page}/{size}", method = RequestMethod.POST)
 	public Result<List> findSearch(@RequestBody Map searchMap, @PathVariable int page, @PathVariable int size) {
-		Page pageList = enterpriseService.findSearch(searchMap, page, size);
+		Page pageList = recruitService.findSearch(searchMap, page, size);
 		return new Result(true, StatusCode.OK, "查询成功",
 				new PageResult<>(pageList.getTotalElements(), pageList.getContent()));
 	}
 
+	@RequestMapping(value = "/search/recommend", method = RequestMethod.GET)
+	public Result recommend() {
+		List<Recruit> list = recruitService.findTop4ByStateOrderByCreatetimeDesc("2");
+		return new Result(true, StatusCode.OK, "查询成功", list);
+	}
+
 	/**
-	 * 查询热门企业
+	 * 最新职位列表
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "/search/hotlist", method = RequestMethod.GET)
-	public Result hotlist() {
-		return new Result(true, StatusCode.OK, "查询成功", enterpriseService.hotlist());
+	@RequestMapping(value = "/search/newlist", method = RequestMethod.GET)
+	public Result newlist() {
+		return new Result(true, StatusCode.OK, "查询成功", recruitService.newlist());
 	}
 }
