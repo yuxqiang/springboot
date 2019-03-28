@@ -3,6 +3,7 @@ package org.ten_article.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.ten_article.dao.ArticleDao;
@@ -28,6 +30,20 @@ public class ArticleService {
 	@Autowired
 	private IdWorker idWorker;
 
+	@Autowired
+	private RedisTemplate redisTemplate;
+
+	public Article findById(String id) {
+		// 从缓存中提取
+		Article article = (Article) redisTemplate.opsForValue().get("article_" + id);
+		// 如果缓存没有则到数据库查询并放入缓存
+		if (article == null) {
+			article = articleDao.findById(id).get();
+			redisTemplate.opsForValue().set("article_" + id, article, 1, TimeUnit.DAYS);
+		}
+		return article;
+	}
+
 	/**
 	 * 查询全部标签
 	 * 
@@ -42,9 +58,9 @@ public class ArticleService {
 	 * 
 	 * @return
 	 */
-	public Article findById(String id) {
-		return articleDao.findById(id).get();
-	}
+	// public Article findById(String id) {
+	// return articleDao.findById(id).get();
+	// }
 
 	public void add(Article label) {
 		label.setId(idWorker.nextId() + "");// 设置ID
@@ -56,16 +72,18 @@ public class ArticleService {
 	 * 
 	 * @param label
 	 */
-	public void update(Article label) {
-		articleDao.save(label);
+	public void update(Article article) {
+		redisTemplate.delete("article_" + article.getId());// 删除缓存
+		articleDao.save(article);
 	}
 
 	/**
-	 * 删除标签
+	 * 删除
 	 * 
 	 * @param id
 	 */
 	public void deleteById(String id) {
+		redisTemplate.delete("article_" + id);// 删除缓存
 		articleDao.deleteById(id);
 	}
 
