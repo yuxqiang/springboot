@@ -117,5 +117,6 @@
     <module>ten_recruit</module>
     <module>ten_qa</module>
     <module>ten_article</module>
+    <module>ten_gathering</module>
 	</modules>
 </project>
