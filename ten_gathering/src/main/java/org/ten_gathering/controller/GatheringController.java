@@ -1,4 +1,4 @@
-package org.ten_base.controller;
+package org.ten_gathering.controller;
 
 import java.util.List;
 import java.util.Map;
@@ -11,19 +11,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.ten_base.pojo.Label;
-import org.ten_base.service.LabelService;
 import org.ten_common.entity.PageResult;
 import org.ten_common.entity.Result;
 import org.ten_common.entity.StatusCode;
+import org.ten_gathering.pojo.Gathering;
+import org.ten_gathering.service.GatheringService;
 
 @RestController
-@RequestMapping("/label")
+@RequestMapping("/gathering")
 @CrossOrigin
-public class LabelController {
+public class GatheringController {
 
 	@Autowired
-	private LabelService labelService;
+	private GatheringService gatheringService;
 
 	/**
 	 * 查询全部列表
@@ -33,7 +33,7 @@ public class LabelController {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@RequestMapping(method = RequestMethod.GET)
 	public Result<List> findAll() {
-		return new Result(true, StatusCode.OK, "查询成功", labelService.findAll());
+		return new Result(true, StatusCode.OK, "查询成功",  gatheringService.findAll());
 	}
 
 	/**
@@ -43,9 +43,9 @@ public class LabelController {
 	 * @return
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	public Result<Label> findById(@PathVariable String id) {
-		return new Result(true, StatusCode.OK, "查询成功", labelService.findById(id));
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)	
+	public Result<Gathering> findById(@PathVariable String id) {
+		return new Result(true, StatusCode.OK, "查询成功", gatheringService.findById(id));
 	}
 
 	/**
@@ -56,14 +56,14 @@ public class LabelController {
 	 */
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(method = RequestMethod.POST)
-	public Result add(@RequestBody Label label) {
-		labelService.add(label);
+	public Result add(@RequestBody Gathering label) {
+		gatheringService.add(label);
 		return new Result(true, StatusCode.OK, "增加成功");
 	}
 
 	@RequestMapping(value = "/search", method = RequestMethod.POST)
 	public Result<List> findSearch(@RequestBody Map searchMap) {
-		return new Result<List>(true, StatusCode.OK, "查询成功", labelService.findSearch(searchMap));
+		return new Result<>(true, StatusCode.OK, "查询成功", gatheringService.findSearch(searchMap));
 	}
 
 	/**
@@ -74,9 +74,9 @@ public class LabelController {
 	 */
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-	public Result update(@RequestBody Label label, @PathVariable String id) {
-		label.setId(id);
-		labelService.update(label);
+	public Result update(@RequestBody Gathering gathering, @PathVariable String id) {
+		gathering.setId(id);
+		gatheringService.update(gathering);
 		return new Result(true, StatusCode.OK, "修改成功");
 	}
 
@@ -89,7 +89,7 @@ public class LabelController {
 	@SuppressWarnings({ "rawtypes" })
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public Result deleteById(@PathVariable String id) {
-		labelService.deleteById(id);
+		gatheringService.deleteById(id);
 		return new Result(true, StatusCode.OK, "删除成功");
 	}
 
@@ -104,8 +104,12 @@ public class LabelController {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@RequestMapping(value = "/search/{page}/{size}", method = RequestMethod.POST)
 	public Result<List> findSearch(@RequestBody Map searchMap, @PathVariable int page, @PathVariable int size) {
-		Page pageList = labelService.findSearch(searchMap, page, size);
+		Page pageList = gatheringService.findSearch(searchMap, page, size);
 		return new Result(true, StatusCode.OK, "查询成功",
-				new PageResult<List>(pageList.getTotalElements(), pageList.getContent()));
+				new PageResult<>(pageList.getTotalElements(), pageList.getContent()));
 	}
+
+
+
+
 }

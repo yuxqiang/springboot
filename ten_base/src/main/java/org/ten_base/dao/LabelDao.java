@@ -10,4 +10,7 @@ import org.ten_base.pojo.Label;
  */
 @Repository
 public interface LabelDao extends JpaRepository<Label, String>, JpaSpecificationExecutor<Label> {
+	
+	
+	
 }
