@@ -34,6 +34,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+		</dependency>
 		 <dependency> 
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-data-mongodb</artifactId>
@@ -123,5 +128,7 @@
     <module>ten_article</module>
     <module>ten_gathering</module>
        <module>ten_spit</module>
-  </modules>
+    <module>tens_user</module>
+    <module>ten_sms</module>
+	</modules>
 </project>
